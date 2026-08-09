@@ -2,17 +2,22 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import ComingSoon from './ComingSoon';
 import Team from './Team';
+import Event from './Event';
 import NotFound from './NotFound';
+import Help from './Help';
+import Register from './Register';
+import Workshop from './Workshop';
 
 function App() {
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/help" element={<ComingSoon />} />
-        <Route path="/event" element={<ComingSoon />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/event" element={<Event />} />
+        <Route path="/workshop" element={<Workshop />} />
         <Route path="/team" element={<Team />} />
-        <Route path="/register" element={<ComingSoon />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
