@@ -56,10 +56,14 @@ function Register() {
           
           <div className="w-full max-w-[700px] bg-white/60 backdrop-blur-md rounded-[2rem] border border-white/40 shadow-sm p-4 sm:p-8 flex justify-center overflow-hidden">
             <iframe 
-              src="https://docs.google.com/forms/d/e/1FAIpQLScDq5taeSYfSCeDuRzRA1KiL8dPpfxMPaeeGChuGP9rFeNuoA/viewform?embedded=true" 
               width="100%" 
-              height="1584" 
-              style={{ border: 0 }}
+              height="800px" 
+              src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=th_MkXUSz0qz6sIT7BYle0BkN5Yqa7BBsHlGaDTi_QhUN0lJNEM0OFdFT040TTE1OTRJT05SSTRNVS4u&embed=true" 
+              frameBorder="0" 
+              marginWidth={0} 
+              marginHeight={0} 
+              style={{ border: 'none', maxWidth: '100%', maxHeight: '100vh' }} 
+              allowFullScreen 
               title="Registration Form"
             >
               Loading…
