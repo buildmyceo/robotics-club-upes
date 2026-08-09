@@ -111,12 +111,18 @@ function Team() {
       const w = window.innerWidth;
       const h = window.innerHeight;
 
-      let cardW = Math.round(w * 0.16 + 130);
+      let cardW;
+      if (w < 640) {
+        // Mobile: Make the card take up 80% of the screen width, up to 320px
+        cardW = Math.min(320, Math.round(w * 0.8));
+      } else {
+        // Desktop/Tablet
+        cardW = Math.round(w * 0.16 + 130);
+        const heightFactor = Math.min(1.0, Math.max(0.65, h / 850));
+        cardW = Math.round(cardW * heightFactor);
+        cardW = Math.min(336, Math.max(150, cardW));
+      }
       
-      const heightFactor = Math.min(1.0, Math.max(0.65, h / 850));
-      cardW = Math.round(cardW * heightFactor);
-      
-      cardW = Math.min(336, Math.max(150, cardW));
       const cardH = Math.round(cardW / 1.5925); 
 
       setMetrics({ cardW, cardH });
