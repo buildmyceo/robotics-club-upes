@@ -328,6 +328,7 @@ function Team() {
                           loop
                           muted
                           playsInline
+                          poster={videoSrc.replace('.mp4', '-poster.jpg')}
                           className="absolute inset-0 w-full h-full object-cover rounded-[16px]"
                         >
                           <source src={videoSrc} type="video/mp4" />
@@ -387,6 +388,7 @@ function Team() {
                             loop
                             muted
                             playsInline
+                            poster={videoSrc.replace('.mp4', '-poster.jpg')}
                             className="absolute inset-0 w-full h-full object-cover"
                           >
                             <source src={videoSrc} type="video/mp4" />

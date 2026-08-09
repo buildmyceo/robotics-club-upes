@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['**/*'],
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,mp4}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,mp4,jpg,jpeg}'],
         maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 50MB to accommodate videos
       }
     })

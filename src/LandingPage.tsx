@@ -57,6 +57,7 @@ function LandingPage() {
         muted
         loop
         playsInline
+        poster={`${import.meta.env.BASE_URL}hero-video-poster.jpg`}
         className="absolute inset-0 w-full h-full object-cover"
       >
         <source src={`${import.meta.env.BASE_URL}hero-video.mp4`} type="video/mp4" />
