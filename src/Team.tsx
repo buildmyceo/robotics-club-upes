@@ -113,8 +113,8 @@ function Team() {
 
       let cardW;
       if (w < 640) {
-        // Mobile: Make the card take up 80% of the screen width, up to 320px
-        cardW = Math.min(320, Math.round(w * 0.8));
+        // Mobile: Make the card take up 65% of the screen width, up to 280px
+        cardW = Math.min(280, Math.round(w * 0.65));
       } else {
         // Desktop/Tablet
         cardW = Math.round(w * 0.16 + 130);
