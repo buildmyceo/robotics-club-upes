@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './LandingPage';
-import ComingSoon from './ComingSoon';
 import Team from './Team';
 import Event from './Event';
 import NotFound from './NotFound';
