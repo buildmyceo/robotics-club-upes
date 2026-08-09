@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+}
+
+:root {
+  --text-main: #1a1a1a;
+  --text-secondary: #888888;
+  --bg-page: #F5F5F5;
+  --card-bg: #ffffff;
+}
+
+html, body, #root {
+  font-family: var(--font-sans);
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+.animate-float-slow {
+  animation: floatSlow 5s ease-in-out infinite;
+}
+.animate-float-slow-delayed {
+  animation: floatSlow 4.5s ease-in-out infinite 1s;
+}
