@@ -4,14 +4,14 @@ import Footer from './Footer';
 
 // Use local videos for offline support
 const CARD_VIDEOS = [
-  '/videos/vid1.mp4',
-  '/videos/vid6.mp4',
-  '/videos/vid33.mp4',
-  '/videos/vid6.mp4',
-  '/videos/vid5.mp4',
-  '/videos/vid3.mp4',
-  '/videos/vid4.mp4'
-];
+  'videos/vid1.mp4',
+  'videos/vid6.mp4',
+  'videos/vid33.mp4',
+  'videos/vid6.mp4',
+  'videos/vid5.mp4',
+  'videos/vid3.mp4',
+  'videos/vid4.mp4'
+].map(path => import.meta.env.BASE_URL + path);
 
 const Logo = () => (
   <svg width="18" height="18" viewBox="0 0 256 256" fill="none">
@@ -68,12 +68,41 @@ function Team() {
       mouse.current.targetY = 0;
     };
 
+    const playVideos = () => {
+      const videos = document.querySelectorAll('video');
+      videos.forEach(video => {
+        video.muted = true;
+        // Fix for WebKit/Safari bug where video disappears on remount
+        if (video.readyState === 0) {
+          video.load();
+        }
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log("Video autoplay prevented:", error);
+          });
+        }
+      });
+    };
+
+    // Try to play immediately
+    // Use a small timeout to ensure DOM is fully ready
+    setTimeout(playVideos, 100);
+
+    // Also attempt to play on user interaction to handle strict autoplay policies (like Safari low power mode)
+    document.addEventListener('click', playVideos, { once: true });
+    document.addEventListener('touchstart', playVideos, { once: true, passive: true });
+    document.addEventListener('scroll', playVideos, { once: true, passive: true });
+
     window.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('click', playVideos);
+      document.removeEventListener('touchstart', playVideos);
+      document.removeEventListener('scroll', playVideos);
     };
   }, []);
 
@@ -295,13 +324,14 @@ function Team() {
                         }}
                       >
                         <video
-                          src={videoSrc}
                           autoPlay
                           loop
                           muted
                           playsInline
                           className="absolute inset-0 w-full h-full object-cover rounded-[16px]"
-                        />
+                        >
+                          <source src={videoSrc} type="video/mp4" />
+                        </video>
 
                         <div className="absolute inset-0 p-5 sm:p-6 text-white h-full w-full font-sans z-10 bg-black/15">
 
@@ -353,13 +383,14 @@ function Team() {
                         {/* Render Video with premium 16px blur on the back face of the card */}
                         <div className="absolute inset-0 pointer-events-none" style={{ filter: 'blur(16px)', transform: 'scale(1.15)' }}>
                           <video
-                            src={videoSrc}
                             autoPlay
                             loop
                             muted
                             playsInline
                             className="absolute inset-0 w-full h-full object-cover"
-                          />
+                          >
+                            <source src={videoSrc} type="video/mp4" />
+                          </video>
                         </div>
 
                         {/* Premium Real Magnetic stripe */}

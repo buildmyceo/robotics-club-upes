@@ -1,4 +1,4 @@
-
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from './Footer';
 
@@ -18,17 +18,49 @@ function LandingPage() {
     { name: 'Help', path: '/help' }
   ];
 
+  useEffect(() => {
+    const playVideos = () => {
+      const videos = document.querySelectorAll('video');
+      videos.forEach(video => {
+        video.muted = true;
+        // Fix for WebKit/Safari bug where video disappears on remount
+        if (video.readyState === 0) {
+          video.load();
+        }
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log("Video autoplay prevented:", error);
+          });
+        }
+      });
+    };
+
+    setTimeout(playVideos, 100);
+    document.addEventListener('click', playVideos, { once: true });
+    document.addEventListener('touchstart', playVideos, { once: true, passive: true });
+    document.addEventListener('scroll', playVideos, { once: true, passive: true });
+
+    return () => {
+      document.removeEventListener('click', playVideos);
+      document.removeEventListener('touchstart', playVideos);
+      document.removeEventListener('scroll', playVideos);
+    };
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f0f0ee]">
       {/* Background Video */}
       <video
+        key="hero-video"
         autoPlay
         muted
         loop
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
-        src="/hero-video.mp4"
-      />
+      >
+        <source src={`${import.meta.env.BASE_URL}hero-video.mp4`} type="video/mp4" />
+      </video>
 
       {/* Foreground Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
