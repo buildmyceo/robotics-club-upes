@@ -12,6 +12,8 @@ interface Profile {
   email: string;
   avatar_url: string | null;
   last_seen?: string | null;
+  sap_id?: string | null;
+  program?: string | null;
 }
 
 interface Message {
@@ -37,7 +39,7 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, name, email, avatar_url, last_seen');
+          .select('id, name, email, avatar_url, last_seen, sap_id, program');
           
         if (error) throw error;
         if (data) {
@@ -199,6 +201,7 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
                   </div>
                   <div className="flex-1 text-left truncate">
                     <p className={`text-sm font-medium truncate ${selectedUser?.id === user.id ? 'text-white' : 'text-gray-900'}`}>{user.name || 'Member'}</p>
+                    {user.program && <p className={`text-[10px] truncate mt-0.5 ${selectedUser?.id === user.id ? 'text-gray-300' : 'text-gray-500'}`}>{user.program}</p>}
                   </div>
                 </button>
               ))
@@ -221,7 +224,11 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 leading-tight">{selectedUser.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-gray-900 leading-tight">{selectedUser.name}</h3>
+                      {selectedUser.sap_id && <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded border border-gray-200">{selectedUser.sap_id}</span>}
+                      {selectedUser.program && <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">{selectedUser.program}</span>}
+                    </div>
                     <p className="text-xs text-gray-500 mt-0.5">
                       {onlineUsers.has(selectedUser.id) 
                         ? <span className="text-green-600 font-medium">Online</span>
