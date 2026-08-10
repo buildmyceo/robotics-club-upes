@@ -11,6 +11,7 @@ interface Profile {
   name: string;
   email: string;
   avatar_url: string | null;
+  last_seen?: string | null;
 }
 
 interface Message {
@@ -26,6 +27,7 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<any>(null);
@@ -35,7 +37,7 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, name, email, avatar_url');
+          .select('id, name, email, avatar_url, last_seen');
           
         if (error) throw error;
         if (data) {
@@ -103,6 +105,14 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
       window.removeEventListener('new_chat_message', handleNewMessage);
     };
   }, [selectedUser, myUserId]);
+
+  useEffect(() => {
+    const handlePresence = (e: any) => {
+      setOnlineUsers(new Set(e.detail));
+    };
+    window.addEventListener('presence_update', handlePresence);
+    return () => window.removeEventListener('presence_update', handlePresence);
+  }, []);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,11 +185,16 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
                     selectedUser?.id === user.id ? 'bg-black text-white shadow-md' : 'hover:bg-black/5 text-gray-700'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0 border border-black/10 flex items-center justify-center">
-                    {user.avatar_url ? (
-                      <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-xs font-bold text-gray-500">{user.name.charAt(0)}</span>
+                  <div className="relative shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border border-black/10 flex items-center justify-center">
+                      {user.avatar_url ? (
+                        <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs font-bold text-gray-500">{user.name.charAt(0)}</span>
+                      )}
+                    </div>
+                    {onlineUsers.has(user.id) && (
+                      <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                     )}
                   </div>
                   <div className="flex-1 text-left truncate">
@@ -207,6 +222,13 @@ export default function Chat({ myUserId, myUserName }: ChatProps) {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 leading-tight">{selectedUser.name}</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {onlineUsers.has(selectedUser.id) 
+                        ? <span className="text-green-600 font-medium">Online</span>
+                        : selectedUser.last_seen 
+                          ? `Last seen: ${new Date(selectedUser.last_seen).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}` 
+                          : 'Offline'}
+                    </p>
                   </div>
                 </div>
                 <button 
