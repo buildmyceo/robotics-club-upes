@@ -44,6 +44,14 @@ function Workshop() {
               </Link>
             ))}
           </div>
+        
+          {/* Login Button */}
+          <Link
+            to="/login"
+            className="flex items-center justify-center rounded-xl px-5 sm:px-6 py-2.5 sm:py-3 text-[12px] sm:text-[14px] font-medium text-gray-800 bg-white/40 backdrop-blur-md border border-white/50 hover:bg-white/60 hover:shadow-md transition-all duration-300 shadow-sm ml-2"
+          >
+            Login
+          </Link>
         </nav>
 
         {/* Content */}

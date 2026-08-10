@@ -6,6 +6,8 @@ import NotFound from './NotFound';
 import Help from './Help';
 import Register from './Register';
 import Workshop from './Workshop';
+import Login from './Login';
+import Dashboard from './Dashboard';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/workshop" element={<Workshop />} />
         <Route path="/team" element={<Team />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

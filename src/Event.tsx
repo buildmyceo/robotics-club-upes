@@ -17,7 +17,7 @@ const slide = {
   image: "https://pub-e68758f43067417dba612b2371819aa1.r2.dev/viktor-components/alien-spaceship.png", 
 };
 
-function Event() {
+function Event({ isDashboard = false }: { isDashboard?: boolean }) {
   const navigate = useNavigate();
 
   const navLinks = [
@@ -45,6 +45,7 @@ function Event() {
       {/* Foreground Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Navbar */}
+        {!isDashboard && (
         <nav className="flex items-center justify-center pt-4 sm:pt-6 px-4 sm:px-8 gap-2 sm:gap-3">
           <Link
             to="/"
@@ -68,7 +69,16 @@ function Event() {
               </Link>
             ))}
           </div>
+        
+          {/* Login Button */}
+          <Link
+            to="/login"
+            className="flex items-center justify-center rounded-xl px-5 sm:px-6 py-2.5 sm:py-3 text-[12px] sm:text-[14px] font-medium text-gray-800 bg-white/40 backdrop-blur-md border border-white/50 hover:bg-white/60 hover:shadow-md transition-all duration-300 shadow-sm ml-2"
+          >
+            Login
+          </Link>
         </nav>
+      )}
 
         {/* Content */}
         <div className="flex-1 flex items-center justify-center px-4 sm:px-12 md:px-20 lg:px-28 py-10">
@@ -114,7 +124,7 @@ function Event() {
         
         {/* Footer */}
         <div className="mt-auto">
-          <Footer />
+          {!isDashboard && <Footer />}
         </div>
       </div>
     </div>

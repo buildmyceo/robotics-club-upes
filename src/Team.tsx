@@ -22,7 +22,7 @@ const Logo = () => (
   </svg>
 );
 
-function Team() {
+function Team({ isDashboard = false }: { isDashboard?: boolean }) {
   const teamMembers = [
     { role: 'President', name: 'Rudrakshi' },
     { role: 'Vice President', name: 'Smaksh' },
@@ -429,6 +429,7 @@ function Team() {
       <div className="relative z-10 flex flex-col min-h-screen pointer-events-none">
         
         {/* Navbar */}
+        {!isDashboard && (
         <nav className="flex items-center justify-center pt-4 sm:pt-6 px-4 sm:px-8 gap-2 sm:gap-3 pointer-events-auto">
           <Link
             to="/"
@@ -452,7 +453,16 @@ function Team() {
               </Link>
             ))}
           </div>
+        
+          {/* Login Button */}
+          <Link
+            to="/login"
+            className="flex items-center justify-center rounded-xl px-5 sm:px-6 py-2.5 sm:py-3 text-[12px] sm:text-[14px] font-medium text-gray-800 bg-white/40 backdrop-blur-md border border-white/50 hover:bg-white/60 hover:shadow-md transition-all duration-300 shadow-sm ml-2"
+          >
+            Login
+          </Link>
         </nav>
+      )}
 
         {/* Hero Content */}
         <div className="flex-1 flex flex-col pt-10 px-6 sm:px-12 md:px-20 lg:px-28">
@@ -470,7 +480,7 @@ function Team() {
         
         {/* Footer (pointer-events-auto so links are clickable) */}
         <div className="pointer-events-auto mt-auto">
-          <Footer />
+          {!isDashboard && <Footer />}
         </div>
       </div>
     </div>
