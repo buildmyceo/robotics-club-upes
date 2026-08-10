@@ -17,6 +17,7 @@ export default function Dashboard() {
   
   // Profile State
   const [userId, setUserId] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -295,15 +296,53 @@ export default function Dashboard() {
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/20 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-400/20 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-white/40 backdrop-blur-xl border-r border-white/40 p-6 flex flex-col z-20">
-        <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg">
-             <svg width="18" height="18" viewBox="0 0 256 256" fill="none">
+      {/* Mobile Top Bar */}
+      <div className="md:hidden w-full bg-white/60 backdrop-blur-xl border-b border-white/40 p-4 flex items-center justify-between z-20 sticky top-0">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-black rounded-lg flex items-center justify-center shadow-lg">
+             <svg width="16" height="16" viewBox="0 0 256 256" fill="none">
                <path fill="#fff" d="M 160 88 L 194 34 L 216 0 L 256 0 L 256 40 L 221.5 93.5 L 200 128 L 256 128 L 256 256 L 96 256 L 96 168 L 64.246 220 L 40 256 L 0 256 L 0 216 L 34 162 L 56 128 L 0 128 L 0 0 L 160 0 Z"/>
              </svg>
           </div>
           <h1 className="font-bold text-lg text-gray-900 tracking-tight">Dashboard</h1>
+        </div>
+        <button 
+          onClick={() => setIsSidebarOpen(true)}
+          className="p-2 bg-white rounded-lg shadow-sm border border-gray-200/50 hover:bg-gray-50"
+        >
+          <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`fixed md:relative inset-y-0 left-0 z-40 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out w-72 md:w-64 bg-white/95 md:bg-white/40 backdrop-blur-xl border-r border-white/40 p-6 flex flex-col h-full shadow-2xl md:shadow-none`}>
+        <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg">
+             <svg width="18" height="18" viewBox="0 0 256 256" fill="none">
+               <path fill="#fff" d="M 160 88 L 194 34 L 216 0 L 256 0 L 256 40 L 221.5 93.5 L 200 128 L 256 128 L 256 256 L 96 256 L 96 168 L 64.246 220 L 40 256 L 0 256 L 0 216 L 34 162 L 56 128 L 0 128 L 0 0 L 160 0 Z"/>
+             </svg>
+            </div>
+            <h1 className="font-bold text-lg text-gray-900 tracking-tight">Dashboard</h1>
+          </div>
+          <button 
+            className="md:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
         <nav className="flex-1 flex flex-col gap-2">
@@ -318,7 +357,10 @@ export default function Dashboard() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setIsSidebarOpen(false); // Close sidebar on mobile when tab clicked
+              }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm ${
                 activeTab === tab.id 
                   ? 'bg-white shadow-sm text-black border border-white/50' 
@@ -358,7 +400,7 @@ export default function Dashboard() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative z-10 h-screen overflow-y-auto custom-scrollbar">
+      <main className="flex-1 relative z-10 h-[calc(100vh-68px)] md:h-screen overflow-y-auto custom-scrollbar">
         
         {/* Floating Message Alert */}
         {message.text && (
