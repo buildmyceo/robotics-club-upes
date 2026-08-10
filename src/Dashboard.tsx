@@ -7,6 +7,7 @@ import Help from './Help';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from './utils/cropImage';
 import { v4 as uuidv4 } from 'uuid';
+import Chat from './Chat';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -36,6 +37,41 @@ export default function Dashboard() {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const channel = supabase.channel('global_chat');
+    
+    channel.on('broadcast', { event: `message_to_${userId}` }, (payload) => {
+      const { senderId, senderName, text, timestamp } = payload.payload;
+      
+      // Save to local storage
+      const key = `chat_${userId}_${senderId}`;
+      const stored = localStorage.getItem(key);
+      const messages = stored ? JSON.parse(stored) : [];
+      messages.push({
+        id: Date.now(),
+        senderId,
+        text,
+        timestamp
+      });
+      localStorage.setItem(key, JSON.stringify(messages));
+      
+      // Show Notification
+      setMessage({ text: `New message from ${senderName}`, type: 'success' });
+      setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+      
+      // Dispatch event for Chat component to reload
+      window.dispatchEvent(new CustomEvent('new_chat_message', { detail: { senderId } }));
+    });
+
+    channel.subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
 
   const fetchProfile = async () => {
     try {
@@ -193,6 +229,7 @@ export default function Dashboard() {
             { id: 'profile', label: 'My Profile', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
             { id: 'events', label: 'Events', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
             { id: 'team', label: 'Team Members', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
+            { id: 'chat', label: 'Chat', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
             { id: 'invite', label: 'Invite Friends', icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z' },
             { id: 'help', label: 'Help & FAQs', icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
           ].map(tab => (
@@ -394,11 +431,12 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* Embedded Layouts (Events, Team, Help) */}
-          <div className={`${['events', 'team', 'help'].includes(activeTab) ? 'block' : 'hidden'} h-full w-full overflow-y-auto`}>
+          {/* Embedded Layouts (Events, Team, Help, Chat) */}
+          <div className={`${['events', 'team', 'help', 'chat'].includes(activeTab) ? 'block' : 'hidden'} h-full w-full overflow-y-auto`}>
             {activeTab === 'events' && <Event isDashboard={true} />}
             {activeTab === 'team' && <Team isDashboard={true} />}
             {activeTab === 'help' && <Help isDashboard={true} />}
+            {activeTab === 'chat' && userId && <Chat myUserId={userId} myUserName={name} />}
           </div>
 
         </div>
