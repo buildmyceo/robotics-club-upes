@@ -580,7 +580,7 @@ export default function Dashboard() {
           )}
 
           {/* Members Tab */}
-          {activeTab === 'members' && <MembersTab currentUserId={userId} onChatWith={(id, memberName) => { setActiveTab('chat'); }} />}
+          {activeTab === 'members' && <MembersTab currentUserId={userId} onChatWith={(_id, _memberName) => { setActiveTab('chat'); }} />}
 
           {/* Embedded Layouts (Events, Team, Help, Chat) */}
           <div className={`${['events', 'team', 'help', 'chat', 'notifications'].includes(activeTab) ? 'block' : 'hidden'} h-full w-full overflow-y-auto`}>
