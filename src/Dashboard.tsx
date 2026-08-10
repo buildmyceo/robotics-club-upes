@@ -260,6 +260,27 @@ export default function Dashboard() {
     setTimeout(() => setMessage({ text: '', type: '' }), 3000);
   };
 
+  const handleRefreshApp = async () => {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+        }
+      } catch (e) {
+        console.error('SW unregister error', e);
+      }
+    }
+    try {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(key => caches.delete(key)));
+    } catch (e) {
+      console.error('Cache delete error', e);
+    }
+    window.location.reload();
+  };
+
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f0f0ee]">
@@ -312,15 +333,28 @@ export default function Dashboard() {
           ))}
         </nav>
 
-        <button 
-          onClick={handleSignOut}
-          className="mt-10 flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-sm"
-        >
-          <svg className="w-5 h-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          Sign Out
-        </button>
+        <div className="mt-10 flex flex-col gap-2">
+          <button 
+            onClick={handleRefreshApp}
+            title="Click this if you don't see new updates"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-blue-600 hover:bg-blue-50 transition-colors font-medium text-sm"
+          >
+            <svg className="w-5 h-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh App
+          </button>
+          
+          <button 
+            onClick={handleSignOut}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors font-medium text-sm"
+          >
+            <svg className="w-5 h-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sign Out
+          </button>
+        </div>
       </aside>
 
       {/* Main Content Area */}
